@@ -1,17 +1,122 @@
 {
-  // ---------------------------------------------------------------------------
-  // Kuzzle configuration file
-  //
-  // You can copy this file to a valid rc file location to customize Kuzzle
-  // configuration (see https://github.com/dominictarr/rc)
-  //
-  // See Kuzzle configuration sample at https://github.com/kuzzleio/kuzzle/blob/master/.kuzzlerc.sample
-  //
-  // ---------------------------------------------------------------------------
-
-  // Custom configuration for your application
-  // You can access it within "app.config.content.application"
-  "application": {
-    "someKey": "value"
-  }
+	"standard": {
+		"roles": {
+			"admin": {
+				"controllers": {
+					"*": {
+						"actions": {
+							"*": true
+						}
+					}
+				}
+			},
+			"seller": {
+				"controllers": {
+					"*": {
+						"actions": {
+							"*": true
+						}
+					}
+				}
+			},
+			"customer": {
+				"controllers": {
+					"*": {
+						"actions": {
+							"*": true
+						}
+					}
+				}
+			}
+		},
+		"profiles": {
+			"admin": {
+				"policies": [{
+					"roleId": "admin"
+				}]
+			},
+			"seller": {
+				"policies": [{
+					"roleId": "seller"
+				}]
+			},
+			"customer": {
+				"policies": [{
+					"roleId": "customer"
+				}]
+			}
+		}
+	},
+	"validation": {
+		"bicyplace": {
+			"products": {
+				"fields": {
+					"price": {
+						"type": "numeric",
+						"mandatory": true,
+						"typeOptions": {
+							"range": {
+								"min": 0
+							}
+						}
+					},
+					"description": {
+						"type": "string",
+						"defaultValue": "Descripción no disponible."
+					},
+					"quantity": {
+						"type": "integer",
+						"mandatory": true,
+						"typeOptions": {
+							"range": {
+								"min": 0
+							}
+						}
+					},
+					"isDisabled": {
+						"type": "boolean",
+						"mandatory": true
+					},
+					"name": {
+						"type": "string",
+						"mandatory": true
+					},
+					"likesCount": {
+						"type": "integer",
+						"mandatory": true,
+						"defaultValue": 0
+					},
+					"state": {
+						"type": "string",
+						"mandatory": true
+					},
+					"type": {
+						"type": "string",
+						"mandatory": true
+					},
+					"createAt": {
+						"type": "date",
+						"mandatory": true
+					},
+					"questions": {
+						"type": "object",
+						"multivalued": {
+							"value": true
+						}
+					},
+					"questions/question": {
+						"type": "string",
+						"mandatory": true
+					},
+					"questions/customerId": {
+						"type": "string",
+						"mandatory": true
+					},
+					"questions/answer": {
+						"type": "string"
+					}
+				}
+			}
+		}
+	}
 }
