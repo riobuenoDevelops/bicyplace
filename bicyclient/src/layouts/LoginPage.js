@@ -1,5 +1,5 @@
 //dependencies imports
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert, AlertIcon, Center, CloseButton, Box } from "@chakra-ui/react";
 import { useHistory } from "react-router-dom";
 
@@ -9,10 +9,13 @@ import LoginForm from "../components/LoginForm";
 //stylesheets and images imports
 import "../styles/login.css";
 
-export default function LoginPage({ kuzzleService }) {
+export default function LoginPage({ kuzzleService, setNavHidden }) {
   const history = useHistory();
-
   const [loginErrors, setLoginErrors] = useState("");
+
+  useEffect(() => {
+    setNavHidden(true);
+  }, []);
 
   const hideErrors = () => {
     setLoginErrors("");
@@ -37,6 +40,7 @@ export default function LoginPage({ kuzzleService }) {
           history={history}
           kuzzleService={kuzzleService}
           setLoginErrors={setLoginErrors}
+          setNavHidden={setNavHidden}
         />
       </Center>
     </Box>

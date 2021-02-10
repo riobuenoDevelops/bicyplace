@@ -21,7 +21,12 @@ import { IoEye, IoEyeOff } from "react-icons/io5";
 
 //component imports
 
-export default function LoginForm({ history, kuzzleService, setLoginErrors }) {
+export default function LoginForm({
+  history,
+  kuzzleService,
+  setLoginErrors,
+  setNavHidden,
+}) {
   //useForm
   const { handleSubmit, register, errors } = useForm();
 
@@ -31,17 +36,27 @@ export default function LoginForm({ history, kuzzleService, setLoginErrors }) {
 
   //component functions
   const onSubmitData = async (data) => {
-    console.log("searching data");
     setSubmitLoading(true);
     try {
-      await kuzzleService.auth.login("local", {
-        username: data.email,
-        password: data.password,
-      });
+      const jwt = await kuzzleService.auth.login(
+        "local",
+        {
+          username: data.username,
+          password: data.password,
+        },
+        "1d"
+      );
+
+      localStorage.setItem("jwt", jwt);
+
+      const user = await kuzzleService.auth.getCurrentUser();
+      localStorage.setItem("user", JSON.stringify(user));
+
+      setNavHidden(false);
       history.push("/");
     } catch (err) {
       console.log(err);
-      setLoginErrors(err.message);
+      setLoginErrors("Usuario o contraseña incorrectos.");
     }
     setSubmitLoading(false);
   };
@@ -70,7 +85,7 @@ export default function LoginForm({ history, kuzzleService, setLoginErrors }) {
         <FormControl id="email" w="100%" isRequired>
           <FormLabel>Correo Electrónico o Username</FormLabel>
           <Input
-            name="email"
+            name="username"
             ref={register({
               required: true,
             })}

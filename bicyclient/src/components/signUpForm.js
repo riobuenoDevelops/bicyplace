@@ -13,12 +13,13 @@ import {
   IconButton,
   Icon,
   Text,
+  Select,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { BeatLoader } from "react-spinners";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 
-const SignUpForm = ({ history, kuzzleService, setErrors }) => {
+const SignUpForm = ({ history, kuzzleService, setErrors, axiosService }) => {
   //useForm
   const { handleSubmit, register, errors, getValues } = useForm();
 
@@ -26,31 +27,31 @@ const SignUpForm = ({ history, kuzzleService, setErrors }) => {
   const [isSubmitLoading, setSubmitLoading] = useState(false);
   const [isPasswordHiden, setPasswordHiden] = useState(true);
   const [isRepeatPasswordHidden, setRepeatPasswordHidden] = useState(true);
+  const [selectedValue, setSelectedValue] = useState("");
 
   //component functions
   const onSubmitData = async (data) => {
     setSubmitLoading(true);
     try {
-      await kuzzleService.security.createUser(data.username, {
-        content: {
-          profileIds: ["customer"],
-          fullName: data.fullName,
-          email: data.email,
-          phone: data.phone,
-        },
-        credentials: {
-          local: {
-            username: data.username,
-            password: data.password,
-          },
-        },
+      const response = await axiosService.getInstance().post("/_/user", {
+        typeOf: selectedValue,
+        username: data.username,
+        fullName: data.fullName,
+        phone: "",
+        email: data.email,
+        password: data.password,
       });
+      console.log(response.data);
       history.push("/login");
     } catch (err) {
       console.log(err);
-      setErrors(err.message);
+      setErrors("Ha ocurrido un error");
     }
     setSubmitLoading(false);
+  };
+
+  const onSelectValue = (e) => {
+    setSelectedValue(e.target.value);
   };
 
   const togglePasswordHidden = () => {
@@ -78,7 +79,18 @@ const SignUpForm = ({ history, kuzzleService, setErrors }) => {
         Registrate en BicyPlace
       </Heading>
       <form onSubmit={handleSubmit(onSubmitData)}>
-        <FormControl id="name" w="100%" isRequired>
+        <FormControl id="typeOf" w="100%" isRequired>
+          <FormLabel>Tipo de Cuenta</FormLabel>
+          <Select
+            placeholder="Seleccione el tipo de cuenta"
+            name="typeOf"
+            onChange={onSelectValue}
+          >
+            <option value="customer">Comprador</option>
+            <option value="seller">Vendedor</option>
+          </Select>
+        </FormControl>
+        <FormControl id="name" w="100%" isRequired mt="2em">
           <FormLabel>Nombre Completo</FormLabel>
           <Input
             name="name"

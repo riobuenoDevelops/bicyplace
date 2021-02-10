@@ -5,7 +5,11 @@ import { useHistory } from "react-router-dom";
 //
 import SignUpForm from "../components/signUpForm";
 
-export default function SignUpPage({ kuzzleService }) {
+export default function SignUpPage({
+  kuzzleService,
+  userService,
+  axiosService,
+}) {
   const history = useHistory();
 
   const [loginErrors, setLoginErrors] = useState("");
@@ -32,6 +36,7 @@ export default function SignUpPage({ kuzzleService }) {
         <SignUpForm
           history={history}
           kuzzleService={kuzzleService}
+          axiosService={axiosService}
           setErrors={setLoginErrors}
         />
       </Center>
