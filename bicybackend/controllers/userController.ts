@@ -52,6 +52,15 @@ class UserController extends Controller {
             },
           ],
         },
+        login: {
+          handler: this.login,
+          http: [
+            {
+              verb: "post",
+              path: "user/login",
+            },
+          ],
+        },
       },
     };
   }
@@ -59,7 +68,22 @@ class UserController extends Controller {
   async getUser(request: KuzzleRequest) {
     const { id } = request.input.args;
 
-    return await this.app.sdk.security.getUser(id);
+    this.app.log.info(`Id: ${id}`);
+
+    try {
+      return await this.app.sdk.security.getUser(id);
+    } catch (err) {
+      this.app.log.error(err.message);
+    }
+  }
+
+  async login(request: KuzzleRequest) {
+    const { username, password } = request.input.body;
+
+    return await this.app.sdk.auth.login("local", {
+      username,
+      password,
+    });
   }
 
   async createUser(request: KuzzleRequest) {
